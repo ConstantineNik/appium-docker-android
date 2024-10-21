@@ -41,9 +41,11 @@ RUN apt-get -qqy update && \
     openjdk-11-jdk \
     sudo \
     tzdata \
+    unzip \
     wget \
     xvfb \
     zip \
+    ffmpeg \
   && rm -rf /var/lib/apt/lists/*
 
 #===============
