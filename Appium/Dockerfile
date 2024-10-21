@@ -41,11 +41,9 @@ RUN apt-get -qqy update && \
     openjdk-11-jdk \
     sudo \
     tzdata \
-    unzip \
     wget \
     xvfb \
     zip \
-    ffmpeg \
   && rm -rf /var/lib/apt/lists/*
 
 #===============
@@ -111,22 +109,19 @@ ENV PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_B
 # Using this workaround to install Appium -> https://github.com/appium/appium/issues/10020 -> Please remove this workaround asap
 #====================================
 ENV NODE_VERSION=18
-ENV APPIUM_VERSION=2.11.4
+ENV APPIUM_VERSION=2.12.0
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash && \
     apt-get -qqy install nodejs && \
     apt-get -qqy install cmake && \
     npm install -g appium@${APPIUM_VERSION} && \
     exit 0 && \
+    npm install -g node-gyp && \
+    npm install --save opencv4nodejs && export OPENCV4NODEJS_DISABLE_AUTOBUILD=1 && \
     npm cache clean && \
     apt-get remove --purge -y npm && \
     apt-get autoremove --purge -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     apt-get clean
-
-#====================================================
-# Install opencv
-#====================================================
-RUN npm install --save opencv4nodejs && export OPENCV4NODEJS_DISABLE_AUTOBUILD=1
 
 #====================================================
 # Fix permission issue to download e.g. chromedriver
@@ -165,7 +160,7 @@ RUN appium driver install --source=npm appium-espresso-driver@${APPIUM_DRIVER_ES
     appium driver install --source=npm appium-flutter-integration-driver@${APPIUM_DRIVER_FLUTTER_INTEGRATION_VERSION} && \
     appium driver install --source=npm appium-geckodriver@${APPIUM_DRIVER_GECKO_VERSION} && \
     appium driver install --source=npm appium-uiautomator2-driver@${APPIUM_DRIVER_UIAUTOMATOR2_VERSION} && \
-    appium plugin install --source=npm i @appium/images-plugin@${APPIUM_PLUGIN_IMAGES_VERSION}
+    appium plugin install --source=npm @appium/images-plugin@${APPIUM_PLUGIN_IMAGES_VERSION}
 
 #===============
 # Expose Port
